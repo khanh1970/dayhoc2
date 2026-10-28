@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Thử Thách Toán Học Lớp 2</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #e0f7fa; text-align: center; margin: 0; padding: 20px; }
+        .bai-tap { background: white; padding: 20px; border-radius: 20px; margin: 20px auto; width: 90%; max-width: 900px; box-shadow: 0 8px 16px rgba(0,0,0,0.15); border: 3px solid #b2ebf2; }
+        h2 { color: #ff6f00; font-size: 32px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+        
+        /* HIỆU ỨNG CHUYỂN ĐỘNG (ANIMATION) */
+        @keyframes nhayRa {
+            0% { transform: scale(0.1); opacity: 0; }
+            70% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .hieu-ung-nhay { animation: nhayRa 0.6s ease-out forwards; }
+        
+        /* BÀI 3: CỬA & MÈO */
+        .cua { display: inline-block; width: 160px; height: 190px; background: #8d6e63; color: white; font-size: 38px; font-weight: bold; margin: 15px; border-radius: 90px 90px 0 0; border: 6px solid #5d4037; cursor: pointer; position: relative; overflow: hidden; box-shadow: 0 6px 12px rgba(0,0,0,0.3); transition: transform 0.2s; }
+        .cua:hover { transform: translateY(-10px); background: #795548; }
+        .chu-cua { line-height: 180px; }
+        
+        /* BÀI 4: Ô TÔ KÉO THẢ */
+        .oto { display: inline-flex; justify-content: center; align-items: center; width: 130px; height: 80px; margin: 10px; cursor: grab; font-size: 35px; font-weight: bold; color: #d32f2f; background-size: contain; background-repeat: no-repeat; background-position: center; border-radius: 15px; filter: drop-shadow(0px 5px 5px rgba(0,0,0,0.2)); transition: transform 0.2s; }
+        .oto:hover { transform: scale(1.1); }
+        .bien-so { background: rgba(255,255,255,0.9); padding: 2px 10px; border-radius: 10px; border: 2px solid #333; }
+        
+        .cho-trong { display: inline-block; width: 140px; height: 90px; border: 4px dashed #0277bd; background: #e3f2fd; vertical-align: middle; margin: 0 10px; border-radius: 15px; transition: background 0.3s; }
+        .phep-tinh { font-size: 45px; font-weight: bold; margin: 25px; color: #01579b; }
+        
+        #thong-bao { font-size: 40px; color: #e91e63; font-weight: bold; display: none; margin-top: 20px; animation: nhayRa 0.5s; }
+    </style>
+</head>
+<body>
+
+    <!-- BÀI 3 -->
+    <div class="bai-tap">
+        <h2>BÀI 3: CON MÈO NẤP SAU CÁNH CỬA NÀO?</h2>
+        <div class="cua" onclick="sai()">
+            <div class="chu-cua">40 - 7</div>
+        </div>
+        <div class="cua" onclick="sai()">
+            <div class="chu-cua">53 - 9</div>
+        </div>
+        <div class="cua" id="cuaC" onclick="dungBai3()">
+            <div class="chu-cua" id="chuCuaC">50 - 4</div>
+            <!-- Ảnh chú mèo được giấu đi (display: none), dùng link ảnh tạm online -->
+            <img id="anhMeo" src="https://cdn-icons-png.flaticon.com/512/1864/1864514.png" style="display:none; width: 120px; margin: 30px auto;">
+        </div>
+    </div>
+
+    <!-- BÀI 4 -->
+    <div class="bai-tap">
+        <h2>BÀI 4: KÉO THẢ Ô TÔ VÀO ĐÚNG CHỖ</h2>
+        <div>
+            <!-- Các ô tô dùng link ảnh tạm online -->
+            <div class="oto" draggable="true" id="so10" style="background-image: url('https://cdn-icons-png.flaticon.com/512/3085/3085330.png');">
+                <span class="bien-so">10</span>
+            </div>
+            <div class="oto" draggable="true" id="so20" style="background-image: url('https://cdn-icons-png.flaticon.com/512/3085/3085333.png');">
+                <span class="bien-so">20</span>
+            </div>
+            <div class="oto" draggable="true" id="so40" style="background-image: url('https://cdn-icons-png.flaticon.com/512/3085/3085332.png');">
+                <span class="bien-so">40</span>
+            </div>
+        </div>
+        
+        <div class="phep-tinh">
+            60 - <div class="cho-trong" id="dich1" data-dapan="so10"></div> = 50
+        </div>
+        <div class="phep-tinh">
+            <div class="cho-trong" id="dich2" data-dapan="so40"></div> - 20 = 20
+        </div>
+        <p id="thong-bao">🎉 CHÚC MỪNG LỚP HAI 2 QUÁ XUẤT SẮC! 🎉</p>
+    </div>
+
+    <script>
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        function phatAmThanh(tanSo, loai, thoiGian) {
+            if(ctx.state === 'suspended') ctx.resume();
+            const osc = ctx.createOscillator();
+            osc.type = loai;
+            osc.frequency.setValueAtTime(tanSo, ctx.currentTime);
+            if(loai === 'sine') {
+                osc.frequency.exponentialRampToValueAtTime(tanSo * 1.5, ctx.currentTime + thoiGian); // Tiếng Ting ngân vang
+            }
+            osc.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + thoiGian);
+        }
+
+        // Xử lý sự kiện Bài 3
+        function dungBai3() {
+            phatAmThanh(800, 'sine', 0.3); // Kêu Ting
+            document.getElementById('chuCuaC').style.display = 'none'; // Giấu phép tính đi
+            document.getElementById('cuaC').style.background = '#fff8e1'; // Đổi màu cửa thành vàng nhạt
+            document.getElementById('cuaC').style.border = '6px solid #ffc107'; 
+            
+            let meo = document.getElementById('anhMeo');
+            meo.style.display = 'block'; // Hiện ảnh mèo
+            meo.classList.add('hieu-ung-nhay'); // Kích hoạt hiệu ứng nhảy chồm ra
+        }
+        
+        function sai() {
+            phatAmThanh(150, 'sawtooth', 0.2); // Kêu Bíp
+        }
+
+        // Xử lý sự kiện Kéo Thả Bài 4
+        let soDiem = 0;
+        const cacOTo = document.querySelectorAll('.oto');
+        const cacChoTrong = document.querySelectorAll('.cho-trong');
+
+        cacOTo.forEach(oto => {
+            oto.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text', e.target.id);
+            });
+        });
+
+        cacChoTrong.forEach(cho => {
+            cho.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                cho.style.background = '#bbdefb'; // Đổi màu khi ô tô lướt qua
+            });
+            cho.addEventListener('dragleave', (e) => {
+                cho.style.background = '#e3f2fd'; // Trả lại màu cũ nếu lướt ra ngoài
+            });
+            cho.addEventListener('drop', (e) => {
+                e.preventDefault();
+                cho.style.background = '#e3f2fd';
+                let duLieuKéo = e.dataTransfer.getData('text');
+                
+                if (duLieuKéo === cho.getAttribute('data-dapan')) {
+                    phatAmThanh(900, 'sine', 0.2); // Kêu Ting
+                    cho.appendChild(document.getElementById(duLieuKéo));
+                    document.getElementById(duLieuKéo).style.margin = '0';
+                    cho.style.border = '4px solid #4caf50'; // Chuyển viền màu xanh lá (Đúng)
+                    soDiem++;
+                    if(soDiem === 2) {
+                        setTimeout(() => {
+                            phatAmThanh(1000, 'triangle', 0.5); // Tiếng âm thanh chiến thắng
+                            document.getElementById('thong-bao').style.display = 'block';
+                        }, 300);
+                    }
+                } else {
+                    sai();
+                    cho.style.border = '4px dashed #f44336'; // Viền màu đỏ (Sai)
+                    setTimeout(() => cho.style.border = '4px dashed #0277bd', 1000);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
